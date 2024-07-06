@@ -8,6 +8,7 @@ import jakarta.persistence.Table;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -18,6 +19,7 @@ public class Libro {
     private Long id;
     @Column(unique = true)
     private String titulo;
+
     @JoinTable(
             name = "libros_autores",
             joinColumns = @JoinColumn(name = "fk_libro", nullable = false),
@@ -27,7 +29,8 @@ public class Libro {
     private List<Autor> autor;
     @Enumerated(EnumType.STRING)
     private Lenguajes idiomas;
-    private int descargas;
+    private String genero;
+    private Long descargas;
 
 
     public Libro() {
@@ -35,7 +38,8 @@ public class Libro {
 
     public Libro(DatosLibro datoslibro) {
         this.titulo = datoslibro.titulo();
-        this.idiomas = Lenguajes.fromString( datoslibro.idiomas().split(",")[0].trim());
+        this.idiomas = Lenguajes.fromString( datoslibro.idiomas().get(0).split(",")[0].trim());
+        this.autor = datoslibro.autor().stream().map(Autor::new).collect(Collectors.toList());
         this.descargas = datoslibro.descargas();
     }
 
@@ -78,11 +82,19 @@ public class Libro {
         this.autor.add(autor);
     }
 
-    public int getDescargas() {
+    public String getGenero() {
+        return genero;
+    }
+
+    public void setGenero(String genero) {
+        this.genero = genero;
+    }
+
+    public Long getDescargas() {
         return descargas;
     }
 
-    public void setDescargas(int descargas) {
+    public void setDescargas(Long descargas) {
         this.descargas = descargas;
     }
 
