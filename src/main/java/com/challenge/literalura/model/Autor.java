@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "autor")
@@ -13,25 +14,38 @@ public class Autor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    private LocalDate fechaNacimiento;
-    private LocalDate fechaFallecimiento;
+    private int fechaNacimiento;
+    private int fechaFallecimiento;
     @ManyToMany(mappedBy = "autor")
     private List<Libro> libro;
 
+
     public Autor(){}
+
+    public Autor(String nombre, int fechaNacimiento, int fechaFallecimiento) {
+        this.nombre = nombre;
+        this.fechaNacimiento = fechaNacimiento;
+        this.fechaFallecimiento = fechaFallecimiento;
+    }
+
     public Autor(DatosAutor datosAutor)
     {
-        this.nombre=datosAutor.fechaFallecimiento();
+        this.nombre=datosAutor.nombre();
         try{
-            this.fechaFallecimiento = LocalDate.parse(datosAutor.fechaFallecimiento());
-        } catch (DateTimeParseException e){
-            this.fechaFallecimiento = null;
+            this.fechaFallecimiento = Integer.parseInt(String.valueOf(datosAutor.fechaFallecimiento()));
+        } catch (Exception e){
+            this.fechaFallecimiento = 0;
         }
         try{
-            this.fechaNacimiento = LocalDate.parse(datosAutor.fechaNacimiento());
-        } catch (DateTimeParseException e){
-            this.fechaNacimiento = null;
+            this.fechaNacimiento = Integer.parseInt(String.valueOf(datosAutor.fechaNacimiento()));
+        } catch (Exception e){
+            this.fechaNacimiento = 0;
         }
+    }
+
+   public Autor(List<DatosAutor> datosAutor)
+    {
+        datosAutor.stream().forEach(d-> new Autor(d.nombre(),d.fechaNacimiento(),d.fechaFallecimiento()));
     }
 
     public Long getId() {
@@ -50,19 +64,19 @@ public class Autor {
         this.nombre = nombre;
     }
 
-    public LocalDate getFechaNacimiento() {
+    public int getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+    public void setFechaNacimiento(int fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
 
-    public LocalDate getFechaFallecimiento() {
+    public int getFechaFallecimiento() {
         return fechaFallecimiento;
     }
 
-    public void setFechaFallecimiento(LocalDate fechaFallecimiento) {
+    public void setFechaFallecimiento(int fechaFallecimiento) {
         this.fechaFallecimiento = fechaFallecimiento;
     }
 
@@ -73,6 +87,8 @@ public class Autor {
     public void setLibro(List<Libro> libro) {
         this.libro = libro;
     }
+
+
 
     @Override
     public String toString()
