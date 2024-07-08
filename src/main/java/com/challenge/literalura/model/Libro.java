@@ -41,6 +41,7 @@ public class Libro {
         this.idiomas = Lenguajes.fromString( datoslibro.idiomas().get(0).split(",")[0].trim());
         this.autor = datoslibro.autor().stream().map(Autor::new).collect(Collectors.toList());
         this.descargas = datoslibro.descargas();
+        this.genero = datoslibro.genero().get(0).split(",")[0].trim();
     }
 
     public Long getId() {
@@ -108,7 +109,7 @@ public class Libro {
     public String toString1(){
         return  "------Libro------"+
                 "\nTitulo: " + titulo +
-                "\nAutor: " + autor +
+                "\nAutor: " + autor.stream().map(a-> a.getNombre().toString()).collect(Collectors.toList()) +
                 "\nIdioma: " + idiomas +
                 "\nDescargas: " + descargas;
     }
