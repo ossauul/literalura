@@ -97,6 +97,6 @@ public class Autor {
                 "Nombre: "+ nombre +
                 "\nFecha nacimiento: " + fechaNacimiento +
                 "\nFecha fallecimiento: " + fechaFallecimiento +
-                "\n Libro(s): " + libro;
+                "\nLibro(s): " + libro.stream().map(l -> l.getTitulo()).collect(Collectors.toList());
     }
 }
